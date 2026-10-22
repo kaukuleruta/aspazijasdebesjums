@@ -1,0 +1,3387 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <title>Aspazijas debesjums</title>
+
+    <style>
+        /* =========================================================
+           FONT
+           ========================================================= */
+
+        @font-face {
+            font-family: "MomoSignature";
+            src: url("assets/MomoSignature-Regular.ttf") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+
+        /* =========================================================
+           GLOBAL
+           ========================================================= */
+
+        :root {
+            --yellow: #E8D214;
+            --design-width: 1920;
+            --design-height: 1080;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+
+            background: #000;
+        }
+
+        body {
+            font-family: "MomoSignature", cursive;
+            color: var(--yellow);
+
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        button {
+            font-family: "MomoSignature", cursive;
+        }
+
+        #app {
+            position: fixed;
+
+            inset: 0;
+
+            width: 100vw;
+            height: 100vh;
+
+            overflow: hidden;
+
+            background: #000;
+        }
+
+
+        /* =========================================================
+           SCREEN SISTĒMA
+           ========================================================= */
+
+        .screen {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            overflow: hidden;
+
+            background: #000;
+
+            opacity: 0;
+            visibility: hidden;
+
+            transition: none;
+
+            z-index: 1;
+        }
+
+        .screen.active {
+            opacity: 1;
+            visibility: visible;
+
+            transition: none;
+
+            z-index: 10;
+        }
+
+
+        /* =========================================================
+           VIDEO
+           ========================================================= */
+
+        .fullscreen-video {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+
+            background: #000;
+        }
+
+
+        /* =========================================================
+           LINGERING
+           ========================================================= */
+
+        #lingeringScreen {
+            background: #000;
+        }
+
+        #lingeringImage {
+            position: absolute;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            display: block;
+        }
+
+        #startButton {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            --start-button-size: 143px;
+
+            width: var(--start-button-size);
+            height: var(--start-button-size);
+
+            transform: translate(-50%, -50%);
+
+            padding: 0;
+            margin: 0;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(232, 210, 20, 0.5);
+
+            animation: start-button-pulse 1s ease-in-out infinite alternate;
+
+            cursor: pointer;
+
+            z-index: 100;
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease;
+        }
+
+        #startButton:hover {
+            transform:
+                translate(-50%, -50%)
+                scale(1.05);
+
+            background:
+                rgba(232, 210, 20, 0.65);
+        }
+
+        #startButton:active {
+            transform:
+                translate(-50%, -50%)
+                scale(0.96);
+        }
+
+        @keyframes start-button-pulse {
+            from {
+                width: 128.7px;
+                height: 128.7px;
+            }
+
+            to {
+                width: 157.3px;
+                height: 157.3px;
+            }
+        }
+
+        @keyframes start-button-pulse-mobile {
+            from {
+                width: 105.3px;
+                height: 105.3px;
+            }
+
+            to {
+                width: 128.7px;
+                height: 128.7px;
+            }
+        }
+
+
+        /* =========================================================
+           GALVENĀ IZVĒLNE
+           40 PX
+           ========================================================= */
+
+        .main-menu {
+            position: absolute;
+
+            inset: 0;
+
+            pointer-events: none;
+        }
+
+        .main-menu-button {
+            position: absolute;
+
+            padding: 0;
+            margin: 0;
+
+            border: none;
+
+            background: transparent;
+
+            color: var(--yellow);
+
+            font-family:
+                "MomoSignature",
+                cursive;
+
+            font-size: 55px;
+
+            font-weight: normal;
+
+            line-height: 1.05;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            white-space: nowrap;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform: translate(-50%, -50%);
+
+            transition:
+                opacity 1s ease;
+        }
+
+        .main-menu.visible
+        .main-menu-button {
+            opacity: 1;
+
+            pointer-events: auto;
+
+        }
+
+        .main-menu-button:hover {
+            text-shadow:
+                0 0 10px
+                rgba(232, 210, 20, 0.55);
+        }
+
+
+        /* =========================================================
+           GALVENĀS IZVĒLNES KOORDINĀTES
+           ========================================================= */
+
+        #cilveks {
+            left: 778px;
+            top: 292.5px;
+        }
+
+        #zeme {
+            left: 442px;
+            top: 763px;
+        }
+
+        #visums {
+            left: 1510.5px;
+            top: 269.5px;
+        }
+
+        #mitologija {
+            left: 1803px;
+            top: 777.5px;
+        }
+
+        #aspazijasDebesjums {
+            left: 1137px;
+            top: 634px;
+
+            width: 440px;
+
+            white-space: normal;
+        }
+
+
+        /* =========================================================
+           SEKCIJU VIDEO EKRĀNI
+           ========================================================= */
+
+        .section-video-screen {
+            background: #000;
+        }
+
+
+        /* =========================================================
+           VIDEO HOME POGA
+           2 SEKUNDĒ
+           ========================================================= */
+
+        .video-home-button {
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            padding: 0;
+            margin: 0;
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transform: translateY(-10px);
+
+            z-index: 100;
+
+            transition:
+                opacity 1s ease,
+                transform 1s ease;
+        }
+
+        .video-home-button img {
+            display: block;
+
+            width: 142px;
+            height: 142px;
+        }
+
+        .section-video-screen.controls-visible
+        .video-home-button {
+            opacity: 1;
+
+            pointer-events: auto;
+
+            transform: translateY(0);
+        }
+
+
+        /*
+         * Aspazijas debesjuma video laikā
+         * HOME NAV redzams.
+         */
+
+        #aspazijasVideoScreen
+        .video-home-button {
+            display: none;
+        }
+
+
+        /* =========================================================
+           APAKŠIZVĒLNE
+           PARĀDĀS VIDEO 5. SEKUNDĒ
+           ========================================================= */
+
+        .sub-menu {
+            position: absolute;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            opacity: 0;
+
+            z-index: 50;
+
+            transition:
+                opacity 1.2s ease;
+        }
+
+        .sub-menu.visible {
+            opacity: 1;
+
+            pointer-events: auto;
+        }
+
+        .sub-menu-button {
+            position: absolute;
+
+            padding: 0;
+            margin: 0;
+
+            border: none;
+
+            background: transparent;
+
+            color: var(--yellow);
+
+            font-family:
+                "MomoSignature",
+                cursive;
+
+            font-size: 75px;
+
+            font-weight: normal;
+
+            line-height: 1.0;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            opacity: 0;
+
+            transform: translate(-50%, calc(-50% + 20px));
+
+            transition:
+                opacity 1.2s ease,
+                transform 1.2s ease;
+        }
+
+        .sub-menu.visible
+        .sub-menu-button {
+            opacity: 1;
+
+            transform: translate(-50%, -50%);
+        }
+
+        .sub-menu-button:hover {
+            text-shadow:
+                0 0 12px
+                rgba(232, 210, 20, 0.55);
+        }
+
+        .multiline {
+            white-space: normal;
+        }
+
+
+        /* =========================================================
+           PNG SKATĪTĀJS
+           ========================================================= */
+
+        #imageScreen {
+            position: absolute;
+
+            --image-fade-duration: 5s;
+
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            overflow-x: hidden;
+            overflow-y: auto;
+
+            background: #000;
+
+            /*
+             * ĻOTI lēns fade PNG ielādes gadījumā.
+             */
+            opacity: 0;
+
+            visibility: hidden;
+
+            transition:
+                opacity var(--image-fade-duration) ease,
+                visibility 0s linear var(--image-fade-duration);
+
+            z-index: 50;
+
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #imageScreen.active {
+            opacity: 1;
+
+            visibility: visible;
+
+            transition:
+                opacity var(--image-fade-duration) ease,
+                visibility 0s linear 0s;
+
+            z-index: 100;
+        }
+
+        #imageScreen.loading {
+            opacity: 0;
+        }
+
+        #imageContainer {
+            position: relative;
+
+            width: 100%;
+            min-height: 100%;
+
+            background: #000;
+        }
+
+        #contentImage {
+            display: block;
+
+            width: 100%;
+            height: auto;
+            max-width: 100%;
+
+            background: #000;
+        }
+
+
+        /* =========================================================
+           PNG NAVIGĀCIJA
+           ========================================================= */
+
+        .image-nav-button {
+            position: fixed;
+
+            padding: 0;
+            margin: 0;
+
+            border: none;
+
+            background: transparent;
+
+            cursor: pointer;
+
+            z-index: 200;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-nav-button img {
+            display: block;
+
+            width: 142px;
+            height: 142px;
+        }
+
+        #imageHomeButton {
+            left: 0;
+            top: 0;
+        }
+
+        #imageBackButton {
+            left: 150px;
+            top: 0;
+        }
+
+        #imageForwardButton {
+            right: 0;
+            top: 0;
+        }
+
+        .image-nav-button:hover {
+            filter: brightness(1.25);
+        }
+
+        .image-nav-button.disabled {
+            opacity: 0.3;
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+           MELNĀ FADE
+           ========================================================= */
+
+        #fadeOverlay {
+            position: fixed;
+
+            inset: 0;
+
+            background: #000;
+
+            opacity: 0;
+
+            visibility: hidden;
+
+            pointer-events: none;
+
+            z-index: 9999;
+
+            transition:
+                opacity var(--fade-duration, 1s) ease,
+                visibility 0s linear 1s;
+        }
+
+        #fadeOverlay.active {
+            opacity: 1;
+
+            visibility: visible;
+
+            transition:
+                opacity var(--fade-duration, 1s) ease,
+                visibility 0s linear 0s;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+           ========================================================= */
+
+        @media (
+            max-width: 700px
+        ) {
+
+            .main-menu-button {
+                font-size: 30px;
+            }
+
+            .sub-menu-button {
+                font-size: 75px;
+            }
+
+            #aspazijasDebesjums {
+                width: 300px;
+            }
+
+            #startButton {
+                --start-button-size: 117px;
+                animation-name: start-button-pulse-mobile;
+            }
+        }
+    </style>
+</head>
+
+
+<body>
+
+<div id="app">
+
+
+    <!-- =========================================================
+         1. BLOKS
+         LINGERING
+         ========================================================= -->
+
+    <section
+        id="lingeringScreen"
+        class="screen active"
+    >
+
+        <img
+            id="lingeringImage"
+            src="assets/lingering.png"
+            alt=""
+        >
+
+        <button
+            id="startButton"
+            aria-label="Sākt"
+        ></button>
+
+    </section>
+
+
+    <!-- =========================================================
+         2. BLOKS
+         INTRO
+         ========================================================= -->
+
+    <section
+        id="introScreen"
+        class="screen"
+    >
+
+        <video
+            id="introVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/intro.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+
+        <div
+            id="mainMenu"
+            class="main-menu"
+        >
+
+            <button
+                id="zeme"
+                class="main-menu-button"
+                data-section="zeme"
+            >
+                Zeme
+            </button>
+
+
+            <button
+                id="cilveks"
+                class="main-menu-button"
+                data-section="cilveks"
+            >
+                Cilvēks
+            </button>
+
+
+            <button
+                id="visums"
+                class="main-menu-button"
+                data-section="visums"
+            >
+                Visums
+            </button>
+
+
+            <button
+                id="mitologija"
+                class="main-menu-button"
+                data-section="mitologija"
+            >
+                Mitoloģija
+            </button>
+
+
+            <button
+                id="aspazijasDebesjums"
+                class="main-menu-button"
+                data-section="aspazijas"
+            >
+                Aspazijas<br>
+                debesjums
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         INTRO TRANSITION
+         ========================================================= -->
+
+    <section
+        id="transitionScreen"
+        class="screen"
+    >
+
+        <video
+            id="transitionVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/intro_transition.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+    </section>
+
+
+    <!-- =========================================================
+         ZEME
+         ========================================================= -->
+
+    <section
+        id="zemeVideoScreen"
+        class="screen section-video-screen"
+    >
+
+        <video
+            id="zemeIntroVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/zeme_intro.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+
+        <button
+            class="video-home-button"
+            data-section="zeme"
+            aria-label="Sākums"
+        >
+            <img
+                src="assets/poga_home.png"
+                alt=""
+            >
+        </button>
+
+
+        <div
+            id="zemeSubMenu"
+            class="sub-menu"
+        >
+
+            <button
+                class="sub-menu-button"
+                data-image="valsts.webp"
+            >
+                Valsts
+            </button>
+
+
+            <button
+                class="sub-menu-button multiline"
+                data-image="eiropaskulturasdarza.webp"
+            >
+                Eiropas<br>
+                kultūras<br>
+                dārzā
+            </button>
+
+
+            <button
+                class="sub-menu-button"
+                data-image="majas.webp"
+            >
+                Mājas
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         CILVĒKS
+         ========================================================= -->
+
+    <section
+        id="cilveksVideoScreen"
+        class="screen section-video-screen"
+    >
+
+        <video
+            id="cilveksIntroVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/cilveks_intro.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+
+        <button
+            class="video-home-button"
+            data-section="cilveks"
+            aria-label="Sākums"
+        >
+            <img
+                src="assets/poga_home.png"
+                alt=""
+            >
+        </button>
+
+
+        <div
+            id="cilveksSubMenu"
+            class="sub-menu"
+        >
+
+            <button
+                class="sub-menu-button"
+                data-image="sieviete.webp"
+            >
+                Sieviete
+            </button>
+
+
+            <button
+                class="sub-menu-button"
+                data-image="dvesele.webp"
+            >
+                Dvēsele
+            </button>
+
+
+            <button
+                class="sub-menu-button"
+                data-image="milestiba.webp"
+            >
+                Mīlestība
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         VISUMS
+         ========================================================= -->
+
+    <section
+        id="visumsVideoScreen"
+        class="screen section-video-screen"
+    >
+
+        <video
+            id="visumsIntroVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/visums_intro.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+
+        <button
+            class="video-home-button"
+            data-section="visums"
+            aria-label="Sākums"
+        >
+            <img
+                src="assets/poga_home.png"
+                alt=""
+            >
+        </button>
+
+
+        <div
+            id="visumsSubMenu"
+            class="sub-menu"
+        >
+
+            <button
+                class="sub-menu-button"
+                data-image="saule.webp"
+            >
+                Saule
+            </button>
+
+
+            <button
+                class="sub-menu-button"
+                data-image="lidojums.webp"
+            >
+                Lidojums
+            </button>
+
+
+            <button
+                class="sub-menu-button multiline"
+                data-image="menessunzvaigznes.webp"
+            >
+                Mēness<br>
+                un<br>
+                zvaigznes
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         MITOLOĢIJA
+         ========================================================= -->
+
+    <section
+        id="mitologijaVideoScreen"
+        class="screen section-video-screen"
+    >
+
+        <video
+            id="mitologijaIntroVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/mitologija_intro.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+
+        <button
+            class="video-home-button"
+            data-section="mitologija"
+            aria-label="Sākums"
+        >
+            <img
+                src="assets/poga_home.png"
+                alt=""
+            >
+        </button>
+
+
+        <div
+            id="mitologijaSubMenu"
+            class="sub-menu"
+        >
+
+            <button
+                class="sub-menu-button"
+                data-image="raganas.webp"
+            >
+                Raganas
+            </button>
+
+
+            <button
+                class="sub-menu-button multiline"
+                data-image="dabasparadibas.webp"
+            >
+                Dabas<br>
+                parādības
+            </button>
+
+
+            <button
+                class="sub-menu-button multiline"
+                data-image="mitologiskievaroni.webp"
+            >
+                Mitoloģiskie<br>
+                varoņi
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         ASPAZIJAS DEBESJUMS
+         ========================================================= -->
+
+    <section
+        id="aspazijasVideoScreen"
+        class="screen section-video-screen"
+    >
+
+        <video
+            id="aspazijasVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/aspazijasdebesjums.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+    </section>
+
+
+    <!-- =========================================================
+         INTRO REPEAT
+         ========================================================= -->
+
+    <section
+        id="repeatScreen"
+        class="screen"
+    >
+
+        <video
+            id="repeatVideo"
+            class="fullscreen-video"
+            preload="auto"
+            playsinline
+            webkit-playsinline
+        >
+            <source
+                src="assets/intro_repeat.mp4"
+                type="video/mp4"
+            >
+        </video>
+
+
+        <div
+            id="repeatMenu"
+            class="main-menu"
+        >
+
+            <button
+                id="repeatZeme"
+                class="main-menu-button"
+                data-section="zeme"
+            >
+                Zeme
+            </button>
+
+
+            <button
+                id="repeatCilveks"
+                class="main-menu-button"
+                data-section="cilveks"
+            >
+                Cilvēks
+            </button>
+
+
+            <button
+                id="repeatVisums"
+                class="main-menu-button"
+                data-section="visums"
+            >
+                Visums
+            </button>
+
+
+            <button
+                id="repeatMitologija"
+                class="main-menu-button"
+                data-section="mitologija"
+            >
+                Mitoloģija
+            </button>
+
+
+            <button
+                id="repeatAspazijas"
+                class="main-menu-button"
+                data-section="aspazijas"
+            >
+                Aspazijas<br>
+                debesjums
+            </button>
+
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         PNG / 4. BLOKS
+         ========================================================= -->
+
+    <section
+        id="imageScreen"
+    >
+
+        <div id="imageContainer">
+
+            <img
+                id="contentImage"
+                src=""
+                alt=""
+            >
+
+        </div>
+
+
+        <!-- HOME -->
+
+        <button
+            id="imageHomeButton"
+            class="image-nav-button"
+            aria-label="Sākums"
+        >
+
+            <img
+                src="assets/poga_home.png"
+                alt=""
+            >
+
+        </button>
+
+
+        <!-- BACK -->
+
+        <button
+            id="imageBackButton"
+            class="image-nav-button"
+            aria-label="Atpakaļ"
+        >
+
+            <img
+                src="assets/poga_back.png"
+                alt=""
+            >
+
+        </button>
+
+
+        <!-- FORWARD -->
+
+        <button
+            id="imageForwardButton"
+            class="image-nav-button"
+            aria-label="Uz priekšu"
+        >
+
+            <img
+                src="assets/poga_forward.png"
+                alt=""
+            >
+
+        </button>
+
+    </section>
+
+
+    <!-- =========================================================
+         FADE OVERLAY
+         ========================================================= -->
+
+    <div id="fadeOverlay"></div>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* ================================================================
+   KONFIGURĀCIJA
+   ================================================================ */
+
+const CONFIG = {
+
+    width: 1920,
+
+    height: 1080,
+
+    /*
+     * Galvenā izvēlne:
+     * parādās 2. sekundē.
+     */
+
+    mainMenuDelay: 1000,
+
+    /*
+     * Sadaļas home:
+     * parādās 2. sekundē.
+     */
+
+    sectionHomeDelay: 2000,
+
+    /*
+     * Apakšizvēlne:
+     * parādās 5. sekundē.
+     */
+
+    subMenuDelay: 5000,
+
+    /*
+    * Intro repeat:
+    * izvēlne parādās 1. sekundē.
+     */
+
+    repeatMenuDelay: 1000,
+
+    /*
+    * 30 sekunžu neaktivitātes reset.
+     */
+
+    videoTimeout: 30000,
+
+    /*
+     * PNG fade:
+     * ļoti lēns.
+     */
+
+    imageFadeDuration: 5000
+
+};
+
+
+/* ================================================================
+   DOM
+   ================================================================ */
+
+const lingeringScreen =
+    document.getElementById(
+        "lingeringScreen"
+    );
+
+const introScreen =
+    document.getElementById(
+        "introScreen"
+    );
+
+const transitionScreen =
+    document.getElementById(
+        "transitionScreen"
+    );
+
+const zemeScreen =
+    document.getElementById(
+        "zemeVideoScreen"
+    );
+
+const cilveksScreen =
+    document.getElementById(
+        "cilveksVideoScreen"
+    );
+
+const visumsScreen =
+    document.getElementById(
+        "visumsVideoScreen"
+    );
+
+const mitologijaScreen =
+    document.getElementById(
+        "mitologijaVideoScreen"
+    );
+
+const aspazijasScreen =
+    document.getElementById(
+        "aspazijasVideoScreen"
+    );
+
+const repeatScreen =
+    document.getElementById(
+        "repeatScreen"
+    );
+
+const imageScreen =
+    document.getElementById(
+        "imageScreen"
+    );
+
+
+const startButton =
+    document.getElementById(
+        "startButton"
+    );
+
+const fadeOverlay =
+    document.getElementById(
+        "fadeOverlay"
+    );
+
+
+const introVideo =
+    document.getElementById(
+        "introVideo"
+    );
+
+const transitionVideo =
+    document.getElementById(
+        "transitionVideo"
+    );
+
+const repeatVideo =
+    document.getElementById(
+        "repeatVideo"
+    );
+
+const soundtrack = new Audio(
+    "assets/soundtrack.mp3"
+);
+
+soundtrack.preload = "auto";
+
+soundtrack.loop = true;
+
+const sectionVideos = {
+
+    zeme:
+        document.getElementById(
+            "zemeIntroVideo"
+        ),
+
+    cilveks:
+        document.getElementById(
+            "cilveksIntroVideo"
+        ),
+
+    visums:
+        document.getElementById(
+            "visumsIntroVideo"
+        ),
+
+    mitologija:
+        document.getElementById(
+            "mitologijaIntroVideo"
+        ),
+
+    aspazijas:
+        document.getElementById(
+            "aspazijasVideo"
+        )
+
+};
+
+
+const mainMenu =
+    document.getElementById(
+        "mainMenu"
+    );
+
+const repeatMenu =
+    document.getElementById(
+        "repeatMenu"
+    );
+
+
+const contentImage =
+    document.getElementById(
+        "contentImage"
+    );
+
+const imageHomeButton =
+    document.getElementById(
+        "imageHomeButton"
+    );
+
+const imageBackButton =
+    document.getElementById(
+        "imageBackButton"
+    );
+
+const imageForwardButton =
+    document.getElementById(
+        "imageForwardButton"
+    );
+
+
+/* ================================================================
+   STĀVOKLIS
+   ================================================================ */
+
+let currentSection = null;
+
+let currentImageIndex = 0;
+
+let currentImageGroup = [];
+
+let videoTimeout = null;
+
+let activeOutroVideo = null;
+
+let activeOutroScreen = null;
+
+let mainMenuTimer = null;
+
+let homeButtonTimer = null;
+
+let subMenuTimer = null;
+
+let repeatMenuTimer = null;
+
+let isBusy = false;
+
+
+/* ================================================================
+   ATTĒLU GRUPAS
+   ================================================================ */
+
+const imageGroups = {
+
+    cilveks: [
+        "sieviete.webp",
+        "dvesele.webp",
+        "milestiba.webp"
+    ],
+
+    zeme: [
+        "valsts.webp",
+        "eiropaskulturasdarza.webp",
+        "majas.webp"
+    ],
+
+    visums: [
+        "saule.webp",
+        "lidojums.webp",
+        "menessunzvaigznes.webp"
+    ],
+
+    mitologija: [
+        "raganas.webp",
+        "dabasparadibas.webp",
+        "mitologiskievaroni.webp"
+    ],
+
+    aspazijas: [
+        "aspazijasdebesjums.webp"
+    ]
+
+};
+
+
+const subMenuPositions = {
+    "sieviete.webp": { x: 580, y: 582 },
+    "dvesele.webp": { x: 964, y: 375 },
+    "milestiba.webp": { x: 1310, y: 587 },
+    "valsts.webp": { x: 948, y: 283 },
+    "eiropaskulturasdarza.webp": { x: 953, y: 486 },
+    "majas.webp": { x: 956, y: 746 },
+    "saule.webp": { x: 602, y: 378 },
+    "lidojums.webp": { x: 893, y: 627 },
+    "menessunzvaigznes.webp": { x: 1255, y: 494 },
+    "raganas.webp": { x: 908, y: 306 },
+    "dabasparadibas.webp": { x: 1073, y: 538 },
+    "mitologiskievaroni.webp": { x: 994, y: 756 }
+};
+
+
+/* ================================================================
+   OUTRO
+   ================================================================ */
+
+const outroFiles = {
+
+    zeme:
+        "assets/zeme_outro.mp4",
+
+    cilveks:
+        "assets/cilveks_outro.mp4",
+
+    visums:
+        "assets/visums_outro.mp4",
+
+    mitologija:
+        "assets/mitologija_outro.mp4"
+
+};
+
+const outroVideos = Object.fromEntries(
+    Object.entries(outroFiles).map(
+        ([section, src]) => {
+
+            const video =
+                document.createElement("video");
+
+            video.className = "fullscreen-video";
+            video.preload = "auto";
+            video.playsInline = true;
+            video.setAttribute("webkit-playsinline", "");
+            video.src = src;
+
+            return [section, video];
+
+        }
+    )
+);
+
+
+/* ================================================================
+   VISI EKRĀNI
+   ================================================================ */
+
+const allScreens = [
+
+    lingeringScreen,
+
+    introScreen,
+
+    transitionScreen,
+
+    zemeScreen,
+
+    cilveksScreen,
+
+    visumsScreen,
+
+    mitologijaScreen,
+
+    aspazijasScreen,
+
+    repeatScreen
+
+];
+
+
+/* ================================================================
+   SCREEN PARĀDĪŠANA
+   ================================================================ */
+
+function showScreen(screen) {
+
+    allScreens.forEach(
+        item => {
+
+            item.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+    imageScreen.classList.remove(
+        "active"
+    );
+
+    screen.classList.add(
+        "active"
+    );
+
+}
+
+
+/* ================================================================
+   FADE
+   ================================================================ */
+
+function fadeToBlack(duration = 1000) {
+
+    fadeOverlay.style.setProperty(
+        "--fade-duration",
+        `${duration}ms`
+    );
+
+    return new Promise(
+        resolve => {
+
+            fadeOverlay.classList.add(
+                "active"
+            );
+
+            setTimeout(
+                resolve,
+                duration
+            );
+
+        }
+    );
+
+}
+
+
+function fadeFromBlack(duration = 1000) {
+
+    fadeOverlay.style.setProperty(
+        "--fade-duration",
+        `${duration}ms`
+    );
+
+    return new Promise(
+        resolve => {
+
+            fadeOverlay.classList.remove(
+                "active"
+            );
+
+            setTimeout(
+                resolve,
+                duration
+            );
+
+        }
+    );
+
+}
+
+
+/* ================================================================
+   VIDEO STOP
+   ================================================================ */
+
+function stopVideo(video) {
+
+    if (!video) {
+        return;
+    }
+
+    try {
+
+        video.pause();
+
+    } catch (error) {}
+
+}
+
+
+function resetVideo(video) {
+
+    if (!video) {
+        return;
+    }
+
+    try {
+
+        video.pause();
+
+        video.currentTime = 0;
+
+    } catch (error) {}
+
+}
+
+
+function stopAllVideos() {
+
+    [
+        introVideo,
+
+        transitionVideo,
+
+        repeatVideo,
+
+        ...Object.values(
+            sectionVideos
+        )
+
+    ].forEach(
+        video => stopVideo(video)
+    );
+
+    if (activeOutroVideo) {
+
+        stopVideo(activeOutroVideo);
+
+        activeOutroScreen.remove();
+
+        activeOutroVideo = null;
+
+        activeOutroScreen = null;
+
+    }
+
+}
+
+
+/* ================================================================
+   VIDEO PLAY
+   ================================================================ */
+
+async function playVideo(video) {
+
+    if (!video) {
+        return;
+    }
+
+    try {
+
+        video.currentTime = 0;
+
+    } catch (error) {}
+
+    /*
+     * Tā kā sākotnējais klikšķis nāk no lietotāja,
+     * mēģinām atskaņot ar skaņu.
+     */
+
+    video.muted = false;
+
+    try {
+
+        await video.play();
+
+    } catch (error) {
+
+        /*
+         * Ja pārlūks bloķē skaņu,
+         * mēģinām muted režīmu.
+         */
+
+        video.muted = true;
+
+        try {
+
+            await video.play();
+
+        } catch (secondError) {
+
+            console.error(
+                "Video nevarēja sākties:",
+                secondError
+            );
+
+        }
+
+    }
+
+}
+
+
+function startSoundtrack() {
+
+    soundtrack.currentTime = 0;
+
+    soundtrack.play().catch(
+        error => {
+
+            console.error(
+                "Soundtrack nevarēja sākties:",
+                error
+            );
+
+        }
+    );
+
+}
+
+
+function stopSoundtrack() {
+
+    soundtrack.pause();
+
+    soundtrack.currentTime = 0;
+
+}
+
+
+/* ================================================================
+   VIDEO TIMEOUT
+   ================================================================ */
+
+function clearVideoTimeout() {
+
+    if (videoTimeout) {
+
+        clearTimeout(
+            videoTimeout
+        );
+
+        videoTimeout = null;
+
+    }
+
+}
+
+
+function handleVideoTimeout() {
+
+    if (
+        repeatScreen.classList.contains("active") &&
+        !repeatVideo.paused &&
+        !repeatVideo.ended &&
+        repeatVideo.currentTime > 0
+    ) {
+
+        videoTimeout =
+            setTimeout(
+                handleVideoTimeout,
+                250
+            );
+
+        return;
+
+    }
+
+    resetToBeginning(true);
+
+}
+
+
+function startVideoTimeout() {
+
+    clearVideoTimeout();
+
+    videoTimeout =
+        setTimeout(
+            handleVideoTimeout,
+            CONFIG.videoTimeout
+        );
+
+}
+
+
+/* ================================================================
+   MENU TIMER CLEANUP
+   ================================================================ */
+
+function clearTimers() {
+
+    [
+        mainMenuTimer,
+        homeButtonTimer,
+        subMenuTimer,
+        repeatMenuTimer
+    ].forEach(
+        timer => {
+
+            if (timer) {
+
+                clearTimeout(
+                    timer
+                );
+
+            }
+
+        }
+    );
+
+    mainMenuTimer = null;
+
+    homeButtonTimer = null;
+
+    subMenuTimer = null;
+
+    repeatMenuTimer = null;
+
+}
+
+
+/* ================================================================
+   1920 x 1080 KOORDINĀTU MĒROGOŠANA
+   ================================================================ */
+
+function scaleMenu(menu) {
+
+    if (!menu) {
+        return;
+    }
+
+    const positions = {
+        mitologija: { x: 1803, y: 777.5 },
+        visums: { x: 1510.5, y: 269.5 },
+        aspazijas: { x: 1137, y: 634 },
+        cilveks: { x: 778, y: 292.5 },
+        zeme: { x: 442, y: 763 }
+    };
+
+
+    Object.entries(
+        positions
+    ).forEach(
+        ([section, position]) => {
+
+            const button =
+                menu.querySelector(
+                    `[data-section="${section}"]`
+                );
+
+            if (!button) {
+                return;
+            }
+
+            button.style.left =
+                position.x + "px";
+
+            button.style.top =
+                position.y + "px";
+
+            button.style.transform =
+                "translate(-50%, -50%)";
+
+        }
+    );
+
+}
+
+
+/* ================================================================
+   GALVENĀ MENU
+   ================================================================ */
+
+function showMainMenuAfter2Seconds() {
+
+    mainMenuTimer =
+        setTimeout(
+            () => {
+
+                scaleMenu(
+                    mainMenu
+                );
+
+                mainMenu.classList.add(
+                    "visible"
+                );
+
+            },
+            CONFIG.mainMenuDelay
+        );
+
+}
+
+
+/* ================================================================
+   SĀKUMA POGA
+   ================================================================ */
+
+startButton.addEventListener(
+    "click",
+    async () => {
+
+        if (isBusy) {
+            return;
+        }
+
+        isBusy = true;
+
+    startSoundtrack();
+
+        clearTimers();
+
+        clearVideoTimeout();
+
+        await fadeToBlack(500);
+
+        stopAllVideos();
+
+        resetVideo(
+            introVideo
+        );
+
+        showScreen(
+            introScreen
+        );
+
+        await playVideo(
+            introVideo
+        );
+
+        await fadeFromBlack(500);
+
+        /*
+         * 60 sekunžu taimeris sākas,
+         * tiklīdz esam video režīmā.
+         */
+
+        startVideoTimeout();
+
+        /*
+         * 2. sekundē menu fade-in.
+         */
+
+        showMainMenuAfter2Seconds();
+
+        isBusy = false;
+
+    }
+);
+
+
+/* ================================================================
+   GALVENĀS IZVĒLNES POGAS
+   ================================================================ */
+
+mainMenu
+    .querySelectorAll(
+        ".main-menu-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const section =
+                        button.dataset.section;
+
+                    openSection(
+                        section
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+/* ================================================================
+   SADAĻAS ATVĒRŠANA
+   ================================================================ */
+
+async function openSection(
+    section
+) {
+
+    if (isBusy) {
+        return;
+    }
+
+    isBusy = true;
+
+    currentSection =
+        section;
+
+    clearTimers();
+
+    clearVideoTimeout();
+
+    mainMenu.classList.remove(
+        "visible"
+    );
+
+    /*
+     * JEBKURA poga:
+     *
+     * intro_transition.mp4
+     */
+
+    stopAllVideos();
+
+    resetVideo(
+        transitionVideo
+    );
+
+    showScreen(
+        transitionScreen
+    );
+
+    await playVideo(
+        transitionVideo
+    );
+
+    startVideoTimeout();
+
+    await waitForEnded(
+        transitionVideo
+    );
+
+    /*
+     * Pēc transition beigām
+     * palaižam konkrēto video.
+     */
+
+    if (
+        section ===
+        "aspazijas"
+    ) {
+
+        resetVideo(
+            sectionVideos.aspazijas
+        );
+
+        showScreen(
+            aspazijasScreen
+        );
+
+        sectionVideos.aspazijas
+            .addEventListener(
+                "ended",
+                handleAspazijasEnded,
+                {
+                    once: true
+                }
+            );
+
+        await playVideo(
+            sectionVideos.aspazijas
+        );
+
+        startVideoTimeout();
+
+        /* Aspazijas video beigās atveras PNG; home poga nav redzama. */
+
+    } else {
+
+        await openRegularSection(
+            section
+        );
+
+    }
+
+    isBusy = false;
+
+}
+
+
+/* ================================================================
+   PARASTĀS SADAĻAS
+   ================================================================ */
+
+function positionSubMenu(menu) {
+
+    if (!menu) {
+        return;
+    }
+
+    menu.querySelectorAll(
+        ".sub-menu-button"
+    ).forEach(
+        button => {
+
+            const position =
+                subMenuPositions[
+                    button.dataset.image
+                ];
+
+            if (!position) {
+                return;
+            }
+
+            button.style.left =
+                `${position.x}px`;
+
+            button.style.top =
+                `${position.y}px`;
+
+        }
+    );
+
+}
+
+async function openRegularSection(
+    section
+) {
+
+    const video =
+        sectionVideos[
+            section
+        ];
+
+    const screenMap = {
+
+        zeme:
+            zemeScreen,
+
+        cilveks:
+            cilveksScreen,
+
+        visums:
+            visumsScreen,
+
+        mitologija:
+            mitologijaScreen
+
+    };
+
+    const screen =
+        screenMap[
+            section
+        ];
+
+    resetVideo(
+        video
+    );
+
+    /*
+     * Atiestatām sub-menu.
+     */
+
+    const submenu =
+        document.getElementById(
+            `${section}SubMenu`
+        );
+
+    if (submenu) {
+
+        submenu.classList.remove(
+            "visible"
+        );
+
+    }
+
+    screen.classList.remove(
+        "controls-visible"
+    );
+
+    showScreen(
+        screen
+    );
+
+    await playVideo(
+        video
+    );
+
+    startVideoTimeout();
+
+    /*
+     * HOME parādās 2. sekundē.
+     */
+
+    homeButtonTimer =
+        setTimeout(
+            () => {
+
+                screen.classList.add(
+                    "controls-visible"
+                );
+
+            },
+            CONFIG.sectionHomeDelay
+        );
+
+    /*
+     * TEKSTA POGAS parādās 5. sekundē.
+     */
+
+    subMenuTimer =
+        setTimeout(
+            () => {
+
+                if (submenu) {
+
+                    positionSubMenu(
+                        submenu
+                    );
+
+                    submenu.classList.add(
+                        "visible"
+                    );
+
+                }
+
+            },
+            CONFIG.subMenuDelay
+        );
+
+}
+
+
+/* ================================================================
+   VIDEO HOME POGA
+   ================================================================ */
+
+document
+    .querySelectorAll(
+        ".video-home-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                async event => {
+
+                    event.stopPropagation();
+
+                    const section =
+                        button.dataset.section;
+
+                    await goToOutro(
+                        section
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+/* ================================================================
+   VIDEO HOME → OUTRO → INTRO REPEAT
+   ================================================================ */
+
+async function goToOutro(
+    section
+) {
+
+    if (isBusy) {
+        return;
+    }
+
+    isBusy = true;
+
+    clearTimers();
+
+    clearVideoTimeout();
+
+    /*
+     * Outro NEattiecas uz Aspazijas,
+     * jo home tur vispār nav.
+     */
+
+    const outro =
+        outroFiles[
+            section
+        ];
+
+    if (!outro) {
+
+        isBusy = false;
+
+        return;
+
+    }
+
+    stopAllVideos();
+
+    const outroVideo =
+        outroVideos[section];
+
+    resetVideo(outroVideo);
+
+
+    const outroScreen =
+        document.createElement(
+            "section"
+        );
+
+    outroScreen.className =
+        "screen active";
+
+    outroScreen.style.opacity =
+        "1";
+
+    outroScreen.style.visibility =
+        "visible";
+
+    outroScreen.style.zIndex =
+        "20";
+
+    activeOutroVideo = outroVideo;
+
+    activeOutroScreen = outroScreen;
+
+    outroScreen.appendChild(
+        outroVideo
+    );
+
+    document
+        .getElementById("app")
+        .appendChild(
+            outroScreen
+        );
+
+
+    await playVideo(
+        outroVideo
+    );
+
+    startVideoTimeout();
+
+    isBusy = false;
+
+
+    /*
+     * Outro video līdz beigām:
+     * pēdējais frame paliek freeze.
+     */
+
+    await waitForEnded(
+        outroVideo
+    );
+
+    if (!outroVideo.ended) {
+
+        return;
+
+    }
+
+
+    /*
+     * Pēc outro:
+     * intro_repeat.mp4
+     */
+
+    outroVideo.classList.add(
+        "freeze"
+    );
+
+    outroVideo.pause();
+
+    outroScreen.remove();
+
+    activeOutroVideo = null;
+
+    activeOutroScreen = null;
+
+    await startIntroRepeat();
+
+    isBusy = false;
+
+}
+
+
+/* ================================================================
+   VIDEO ENDED
+   ================================================================ */
+
+function waitForEnded(video) {
+
+    return new Promise(
+        resolve => {
+
+            if (video.ended) {
+
+                resolve();
+
+                return;
+
+            }
+
+            video.addEventListener(
+                "ended",
+                resolve,
+                {
+                    once: true
+                }
+            );
+
+            video.addEventListener(
+                "pause",
+                resolve,
+                {
+                    once: true
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* ================================================================
+   ASPAZIJAS VIDEO BEIGAS
+   ================================================================ */
+
+async function handleAspazijasEnded() {
+
+    /*
+     * Pēdējais video frame paliek freeze.
+     */
+
+    sectionVideos
+        .aspazijas
+        .pause();
+
+    /*
+     * Uzreiz pēc video:
+     * PNG.
+     */
+
+    openImage(
+        "aspazijas",
+        0
+    );
+
+}
+
+
+/* ================================================================
+   INTRO REPEAT
+   ================================================================ */
+
+async function startIntroRepeat() {
+
+    clearTimers();
+
+    clearVideoTimeout();
+
+    repeatMenu.classList.remove(
+        "visible"
+    );
+
+    stopAllVideos();
+
+    resetVideo(
+        repeatVideo
+    );
+
+    showScreen(
+        repeatScreen
+    );
+
+    void playVideo(
+        repeatVideo
+    );
+
+    startVideoTimeout();
+
+    /*
+     * 1. sekundē:
+     * atkal Zeme, Cilvēks, Visums,
+     * Mitoloģija, Aspazijas debesjums.
+     */
+
+    repeatMenuTimer =
+        setTimeout(
+            () => {
+
+                scaleMenu(
+                    repeatMenu
+                );
+
+                repeatMenu.classList.add(
+                    "visible"
+                );
+
+            },
+            CONFIG.repeatMenuDelay
+        );
+
+}
+
+
+/* ================================================================
+   REPEAT MENU POGAS
+   ================================================================ */
+
+repeatMenu
+    .querySelectorAll(
+        ".main-menu-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    openSection(
+                        button.dataset.section
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+/* ================================================================
+   APAKŠIZVĒLŅU POGAS
+   ================================================================ */
+
+document
+    .querySelectorAll(
+        ".sub-menu-button"
+    )
+    .forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    const screen =
+                        button.closest(
+                            ".section-video-screen"
+                        );
+
+                    if (!screen) {
+                        return;
+                    }
+
+                    let section = null;
+
+
+                    if (
+                        screen.id ===
+                        "zemeVideoScreen"
+                    ) {
+
+                        section =
+                            "zeme";
+
+                    } else if (
+                        screen.id ===
+                        "cilveksVideoScreen"
+                    ) {
+
+                        section =
+                            "cilveks";
+
+                    } else if (
+                        screen.id ===
+                        "visumsVideoScreen"
+                    ) {
+
+                        section =
+                            "visums";
+
+                    } else if (
+                        screen.id ===
+                        "mitologijaVideoScreen"
+                    ) {
+
+                        section =
+                            "mitologija";
+
+                    }
+
+
+                    if (!section) {
+                        return;
+                    }
+
+
+                    const group =
+                        imageGroups[
+                            section
+                        ];
+
+                    const index =
+                        group.indexOf(
+                            button.dataset.image
+                        );
+
+
+                    if (index === -1) {
+                        return;
+                    }
+
+
+                    openImage(
+                        section,
+                        index
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+/* ================================================================
+   PNG ATVĒRŠANA
+   ================================================================ */
+
+function openImage(
+    section,
+    index
+) {
+
+    const group =
+        imageGroups[
+            section
+        ];
+
+    if (!group) {
+        return;
+    }
+
+    currentSection =
+        section;
+
+    currentImageGroup =
+        group;
+
+    currentImageIndex =
+        index;
+
+    const fadeDuration =
+        group[index].toLowerCase().endsWith(".webp")
+            ? CONFIG.imageFadeDuration / 2
+            : CONFIG.imageFadeDuration;
+
+    imageScreen.style.setProperty(
+        "--image-fade-duration",
+        `${fadeDuration}ms`
+    );
+
+
+    /* Idle taimeris darbojas arī attēlu ekrānā. */
+
+    clearVideoTimeout();
+
+    startVideoTimeout();
+
+    clearTimers();
+
+    stopAllVideos();
+
+
+    /*
+     * PNG ielāde.
+     */
+
+    imageScreen.classList.remove(
+        "active"
+    );
+
+    imageScreen.classList.add(
+        "loading"
+    );
+
+
+    const image =
+        new Image();
+
+
+    image.onload = () => {
+
+        contentImage.src =
+            image.src;
+
+        imageScreen.scrollTop =
+            0;
+
+        updateImageButtons();
+
+
+        /*
+         * ĻOOOTI lēns fade-in.
+         */
+
+        imageScreen.classList.add(
+            "active"
+        );
+
+        requestAnimationFrame(
+            () => {
+
+                requestAnimationFrame(
+                    () => {
+
+                        imageScreen.classList.remove(
+                            "loading"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+    };
+
+
+    image.onerror = () => {
+
+        console.error(
+            "PNG neizdevās ielādēt:",
+            group[index]
+        );
+
+        /*
+         * Arī kļūdas gadījumā
+         * atgriežam opacity.
+         */
+
+        contentImage.src =
+            "";
+
+        imageScreen.classList.add(
+            "active"
+        );
+
+        imageScreen.classList.remove(
+            "loading"
+        );
+
+    };
+
+
+    image.src =
+        `assets/${group[index]}`;
+
+}
+
+
+/* ================================================================
+   PNG HOME
+   ================================================================ */
+
+imageHomeButton.addEventListener(
+    "click",
+    async () => {
+
+        if (isBusy) {
+            return;
+        }
+
+        isBusy = true;
+
+        const fastFadeDuration =
+            CONFIG.imageFadeDuration / 2;
+
+        imageScreen.style.setProperty(
+            "--image-fade-duration",
+            `${fastFadeDuration}ms`
+        );
+
+        setTimeout(
+            () => {
+
+                imageScreen.style.removeProperty(
+                    "--image-fade-duration"
+                );
+
+            },
+            fastFadeDuration
+        );
+
+        /*
+         * SVARĪGI:
+         *
+         * PNG HOME:
+         * outro tiek pilnībā izlaists.
+         *
+         * Tieši → intro_repeat.mp4
+         */
+
+        await startIntroRepeat();
+
+        isBusy = false;
+
+    }
+);
+
+
+/* ================================================================
+   PNG BACK
+   ================================================================ */
+
+imageBackButton.addEventListener(
+    "click",
+    () => {
+
+        if (
+            currentImageIndex <= 0
+        ) {
+            return;
+        }
+
+        currentImageIndex--;
+
+        openImage(
+            currentSection,
+            currentImageIndex
+        );
+
+    }
+);
+
+
+/* ================================================================
+   PNG FORWARD
+   ================================================================ */
+
+imageForwardButton.addEventListener(
+    "click",
+    () => {
+
+        if (
+            currentImageIndex >=
+            currentImageGroup.length - 1
+        ) {
+            return;
+        }
+
+        currentImageIndex++;
+
+        openImage(
+            currentSection,
+            currentImageIndex
+        );
+
+    }
+);
+
+
+/* ================================================================
+   PNG POGU STĀVOKLIS
+   ================================================================ */
+
+function updateImageButtons() {
+
+    if (
+        currentImageIndex <= 0
+    ) {
+
+        imageBackButton.classList.add(
+            "disabled"
+        );
+
+    } else {
+
+        imageBackButton.classList.remove(
+            "disabled"
+        );
+
+    }
+
+
+    if (
+        currentImageIndex >=
+        currentImageGroup.length - 1
+    ) {
+
+        imageForwardButton.classList.add(
+            "disabled"
+        );
+
+    } else {
+
+        imageForwardButton.classList.remove(
+            "disabled"
+        );
+
+    }
+
+}
+
+
+/* ================================================================
+    30 SEKUNŽU NEAKTIVITĀTES RESET
+   ================================================================ */
+
+async function resetToBeginning(force = false) {
+
+    if (isBusy && !force) {
+        return;
+    }
+
+    isBusy = true;
+
+    clearTimers();
+
+    clearVideoTimeout();
+
+    await fadeToBlack();
+
+    stopAllVideos();
+
+    stopSoundtrack();
+
+    /*
+     * Atiestatām visus video.
+     */
+
+    [
+        introVideo,
+
+        transitionVideo,
+
+        repeatVideo,
+
+        ...Object.values(
+            sectionVideos
+        )
+
+    ].forEach(
+        video => resetVideo(video)
+    );
+
+
+    /*
+     * Paslēpjam izvēlnes.
+     */
+
+    mainMenu.classList.remove(
+        "visible"
+    );
+
+    repeatMenu.classList.remove(
+        "visible"
+    );
+
+
+    document
+        .querySelectorAll(
+            ".sub-menu"
+        )
+        .forEach(
+            menu => {
+
+                menu.classList.remove(
+                    "visible"
+                );
+
+            }
+        );
+
+
+    document
+        .querySelectorAll(
+            ".section-video-screen"
+        )
+        .forEach(
+            screen => {
+
+                screen.classList.remove(
+                    "controls-visible"
+                );
+
+            }
+        );
+
+
+    /*
+     * PNG aizveram.
+     */
+
+    imageScreen.classList.remove(
+        "active"
+    );
+
+
+    /*
+     * Sākums:
+     * lingering.png.
+     */
+
+    showScreen(
+        lingeringScreen
+    );
+
+
+    /*
+     * Lingering ekrānam nav taimera.
+     */
+
+    await fadeFromBlack();
+
+    isBusy = false;
+
+}
+
+
+/* ================================================================
+   VIDEO END — FREEZE FRAME
+   ================================================================ */
+
+[
+    introVideo,
+
+    transitionVideo,
+
+    repeatVideo,
+
+    ...Object.values(
+        sectionVideos
+    )
+
+].forEach(
+    video => {
+
+        video.addEventListener(
+            "ended",
+            () => {
+
+                /*
+                 * Video netiek resetēts.
+                 * Tādēļ pārlūks atstāj pēdējo
+                 * frame redzamu.
+                 */
+
+                video.pause();
+
+            }
+        );
+
+    }
+);
+
+
+/* ================================================================
+   PRELOAD — VIDEO
+   ================================================================ */
+
+/* ================================================================
+   PRELOAD — PNG
+   ================================================================ */
+
+const imageFiles = [
+
+    "lingering.png",
+
+    "poga_home.png",
+    "poga_back.png",
+    "poga_forward.png",
+
+    "sieviete.webp",
+    "dvesele.webp",
+    "milestiba.webp",
+
+    "valsts.webp",
+    "eiropaskulturasdarza.webp",
+    "majas.webp",
+
+    "saule.webp",
+    "lidojums.webp",
+    "menessunzvaigznes.webp",
+
+    "raganas.webp",
+    "dabasparadibas.webp",
+    "mitologiskievaroni.webp",
+
+    "aspazijasdebesjums.webp"
+
+];
+
+
+function preloadImages() {
+
+    imageFiles.forEach(
+        filename => {
+
+            const image =
+                new Image();
+
+            image.src =
+                `assets/${filename}`;
+
+        }
+    );
+
+}
+
+
+/* ================================================================
+   RESIZE
+   ================================================================ */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        scaleMenu(
+            mainMenu
+        );
+
+        scaleMenu(
+            repeatMenu
+        );
+
+    }
+);
+
+
+/* ================================================================
+   ESC
+   ================================================================ */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (
+            event.key ===
+            "Escape"
+        ) {
+
+            resetToBeginning();
+
+        }
+
+
+        if (
+            imageScreen.classList.contains(
+                "active"
+            )
+        ) {
+
+            if (
+                event.key ===
+                "ArrowLeft"
+            ) {
+
+                imageBackButton.click();
+
+            }
+
+
+            if (
+                event.key ===
+                "ArrowRight"
+            ) {
+
+                imageForwardButton.click();
+
+            }
+
+        }
+
+    }
+);
+
+
+[
+    "pointerdown",
+    "pointermove",
+    "keydown",
+    "wheel",
+    "touchstart",
+    "touchmove"
+].forEach(
+    eventName => {
+
+        document.addEventListener(
+            eventName,
+            () => {
+
+                if (
+                    lingeringScreen.classList.contains("active") ||
+                    !videoTimeout
+                ) {
+                    return;
+                }
+
+                startVideoTimeout();
+
+            },
+            { passive: true }
+        );
+
+    }
+);
+
+
+/* ================================================================
+   INIT
+   ================================================================ */
+
+function init() {
+
+    /*
+     * Obligāti sākam ar lingering.
+     */
+
+    showScreen(
+        lingeringScreen
+    );
+
+
+    /*
+     * Lingering paliek bezgalīgi.
+     */
+
+    clearVideoTimeout();
+
+
+    /*
+     * Galvenā izvēlne sākumā neredzama.
+     */
+
+    mainMenu.classList.remove(
+        "visible"
+    );
+
+
+    /*
+     * Preload.
+     */
+
+    preloadImages();
+
+
+    /*
+     * Sākotnējā koordinātu sistēma.
+     */
+
+    scaleMenu(
+        mainMenu
+    );
+
+    scaleMenu(
+        repeatMenu
+    );
+
+}
+
+
+/* ================================================================
+   START
+   ================================================================ */
+
+init();
+
+</script>
+
+</body>
+</html>
